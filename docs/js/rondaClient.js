@@ -16,6 +16,7 @@ class RondaClient {
     this.init();
   }
 
+  init() {
     const isGitHubPages = window.location.hostname.includes('github.io');
     if (typeof io !== 'undefined' && !isGitHubPages) {
       try {
