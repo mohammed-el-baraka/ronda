@@ -1,0 +1,164 @@
+/*
+ * Moroccan Ronda — Card & Animation System
+ * Cinematic slow glides, fanned arched hand, deliberate dealing arcs
+ */
+
+/* =========== BASE CARD =========== */
+.ronda-card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: var(--card-r);
+  background: #fff;
+  box-shadow:
+    0 6px 18px rgba(0,0,0,.5),
+    0 1px 3px rgba(0,0,0,.3);
+  user-select: none;
+  cursor: default;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s ease;
+  transform-origin: center bottom;
+  overflow: hidden;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.ronda-card-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+  pointer-events: none;
+}
+.ronda-card.card-back {
+  background: linear-gradient(135deg,#064e3b,#022c22);
+  border: 1.5px solid var(--amber);
+}
+
+/* =========== PLAYER HAND FAN =========== */
+.my-hand {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 8px 16px;
+  min-height: calc(var(--card-h) + 28px);
+}
+.my-hand .ronda-card {
+  margin: 0 -7px;
+  transition: all .3s cubic-bezier(.175,.885,.32,1.275);
+}
+
+/* Fan arch angles */
+.my-hand .ronda-card:nth-child(1):nth-last-child(4){ transform:rotate(-10deg) translateY(5px); }
+.my-hand .ronda-card:nth-child(2):nth-last-child(4){ transform:rotate(-3deg) translateY(-2px); }
+.my-hand .ronda-card:nth-child(3):nth-last-child(4){ transform:rotate(3deg) translateY(-2px); }
+.my-hand .ronda-card:nth-child(4):nth-last-child(4){ transform:rotate(10deg) translateY(5px); }
+.my-hand .ronda-card:nth-child(1):nth-last-child(3){ transform:rotate(-8deg) translateY(3px); }
+.my-hand .ronda-card:nth-child(2):nth-last-child(3){ transform:rotate(0deg) translateY(-3px); }
+.my-hand .ronda-card:nth-child(3):nth-last-child(3){ transform:rotate(8deg) translateY(3px); }
+.my-hand .ronda-card:nth-child(1):nth-last-child(2){ transform:rotate(-5deg); }
+.my-hand .ronda-card:nth-child(2):nth-last-child(2){ transform:rotate(5deg); }
+
+/* Playable hover */
+.ronda-card.is-playable { cursor: pointer; }
+.ronda-card.is-playable:hover {
+  transform: translateY(-30px) scale(1.16) rotate(0deg) !important;
+  box-shadow:
+    0 20px 40px rgba(139,92,246,.6),
+    0 0 0 3px var(--violet),
+    0 0 24px var(--violet-glow) !important;
+  z-index: 100 !important;
+  filter: brightness(1.08);
+}
+.ronda-card.is-playable:active {
+  transform: translateY(-14px) scale(1.05) rotate(0deg) !important;
+}
+
+/* Table card landing */
+.table-cards .ronda-card {
+  box-shadow: 0 8px 20px rgba(0,0,0,.6);
+  animation: card-land .5s cubic-bezier(.175,.885,.32,1.2) forwards;
+}
+@keyframes card-land {
+  0%  { opacity:0; transform:scale(.6) rotate(-8deg); }
+  100%{ opacity:1; transform:scale(1) rotate(0deg); }
+}
+
+/* Capture highlight */
+.ronda-card.highlight-capture {
+  box-shadow: 0 0 0 3px var(--green), 0 0 24px rgba(16,185,129,.8) !important;
+  animation: pulse-cap 1s infinite alternate !important;
+}
+@keyframes pulse-cap {
+  0%  { transform:scale(1); }
+  100%{ transform:scale(1.08); }
+}
+
+/* =========== UNO-STYLE CARD FLIGHT (1.4s) =========== */
+.flight-wrap {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  z-index: 850;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+
+.flight-south{ animation: glide-s 1.4s cubic-bezier(.22,1,.36,1) forwards; }
+.flight-east { animation: glide-e 1.4s cubic-bezier(.22,1,.36,1) forwards; }
+.flight-north{ animation: glide-n 1.4s cubic-bezier(.22,1,.36,1) forwards; }
+.flight-west { animation: glide-w 1.4s cubic-bezier(.22,1,.36,1) forwards; }
+
+@keyframes glide-s {
+  0%  { opacity:0; transform:translate(-50%,200px) scale(.4) rotate(18deg); }
+  15% { opacity:1; }
+  55% { transform:translate(-50%,-60px) scale(1.3) rotate(-5deg); filter:drop-shadow(0 16px 30px var(--violet-glow)); }
+  100%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0); }
+}
+@keyframes glide-e {
+  0%  { opacity:0; transform:translate(220px,-50%) scale(.4) rotate(-18deg); }
+  15% { opacity:1; }
+  55% { transform:translate(-30px,-60px) scale(1.3) rotate(6deg); filter:drop-shadow(0 16px 30px var(--amber-glow)); }
+  100%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0); }
+}
+@keyframes glide-n {
+  0%  { opacity:0; transform:translate(-50%,-230px) scale(.4) rotate(-14deg); }
+  15% { opacity:1; }
+  55% { transform:translate(-50%,-40px) scale(1.3) rotate(5deg); filter:drop-shadow(0 16px 30px var(--violet-glow)); }
+  100%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0); }
+}
+@keyframes glide-w {
+  0%  { opacity:0; transform:translate(-230px,-50%) scale(.4) rotate(18deg); }
+  15% { opacity:1; }
+  55% { transform:translate(-60px,-60px) scale(1.3) rotate(-6deg); filter:drop-shadow(0 16px 30px var(--amber-glow)); }
+  100%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0); }
+}
+
+.flight-badge {
+  background: var(--violet);
+  color: #fff;
+  font-family: var(--font-ar);
+  font-size: 13px; font-weight: 900;
+  padding: 4px 14px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.6), 0 0 12px var(--violet-glow);
+  margin-bottom: 8px;
+  border: 1.5px solid rgba(255,255,255,.3);
+  animation: badge-in .3s ease-out;
+}
+@keyframes badge-in { 0%{transform:scale(.5);opacity:0;} 100%{transform:scale(1);opacity:1;} }
+
+/* =========== DEALING ANIMATION (.85s per card transit) =========== */
+.deal-card {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: var(--card-w); height: var(--card-h);
+  pointer-events: none;
+  z-index: 750;
+  transition: all .85s cubic-bezier(.25,1,.5,1);
+  opacity: 0;
+  box-shadow: 0 10px 24px rgba(0,0,0,.65);
+}
+.deal-to-south{ transform:translate(-50%,180px) scale(1) rotate(0)   !important; opacity:1 !important; }
+.deal-to-east { transform:translate(190px,-50%) scale(.7) rotate(90deg) !important; opacity:1 !important; }
+.deal-to-north{ transform:translate(-50%,-200px) scale(.7) rotate(180deg)!important; opacity:1 !important; }
+.deal-to-west { transform:translate(-190px,-50%) scale(.7) rotate(-90deg)!important; opacity:1 !important; }

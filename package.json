@@ -1,0 +1,27 @@
+{
+  "name": "moroccan-ronda",
+  "version": "1.0.0",
+  "description": "Authentic Moroccan Ronda (الروندا) 4-Player Local Network Card Game",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "test": "node test/rondaTest.js"
+  },
+  "keywords": [
+    "ronda",
+    "moroccan-game",
+    "card-game",
+    "multiplayer",
+    "lan",
+    "socketio"
+  ],
+  "author": "Mohammed El Baraka",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1"
+  }
+}

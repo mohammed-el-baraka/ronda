@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>الروندا المغربية — Moroccan Ronda</title>
+  <meta name="description" content="لعبة الروندا المغربية الأصلية بالعواد والحجرات لـ 4 لاعبين عبر الشبكة المحلية">
+  <meta name="theme-color" content="#8b5cf6">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cards.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-brand">
+        <div class="brand-mark">R</div>
+        <span class="brand-text">الروندا المغربية</span>
+      </div>
+      <div class="topbar-actions">
+        <button id="btn-open-rules" class="pill"><i class="pill-icon">i</i> القواعد</button>
+        <button id="btn-open-qr" class="pill"><i class="pill-icon">#</i> الشبكة</button>
+        <button id="btn-toggle-audio" class="pill active"><i class="pill-icon">♪</i> صوت</button>
+        <button id="btn-toggle-chat" class="pill"><i class="pill-icon">…</i></button>
+        <button id="btn-quit-game" class="pill pill-danger" style="display:none;">خروج</button>
+      </div>
+    </header>
+
+    <!-- 1. LOBBY -->
+    <main id="lobby-view" class="lobby">
+      <div class="lobby-title">
+        <h1>الروندا المغربية</h1>
+        <p>العب مع صحابك ف نفس الواي فاي بربعة بيكم -- العواد والحجرات والدفوعات</p>
+      </div>
+
+      <div class="lobby-grid">
+        <!-- Solo -->
+        <div class="lobby-panel">
+          <h2>لعب فردي سريع</h2>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;">
+            العب دابا ضد 3 بوتات حريفية بلا ما تسنى حد. نظام العواد والحجرات كامل.
+          </p>
+          <button id="btn-start-solo" class="btn-primary btn-amber" style="margin-top:auto;">ابدأ اللعب الفردي</button>
+        </div>
+
+        <!-- Create -->
+        <div class="lobby-panel">
+          <h2>إنشاء طابلة جماعية</h2>
+          <div>
+            <span class="panel-label">اسم اللاعب</span>
+            <input type="text" id="player-name-input" class="input-field" value="الرايس" maxlength="16" placeholder="سميتك...">
+          </div>
+          <div>
+            <span class="panel-label">الصورة الرمزية</span>
+            <div class="avatar-row">
+              <div class="av-pick selected" data-avatar="tarboosh">T</div>
+              <div class="av-pick" data-avatar="fez">M</div>
+              <div class="av-pick" data-avatar="djellaba">D</div>
+              <div class="av-pick" data-avatar="tea">A</div>
+              <div class="av-pick" data-avatar="sheikh">S</div>
+              <div class="av-pick" data-avatar="mustache">H</div>
+            </div>
+          </div>
+          <button id="btn-create-room" class="btn-primary">إنشاء غرفة</button>
+        </div>
+
+        <!-- Join -->
+        <div class="lobby-panel lobby-wide">
+          <h2>الدخول لطابلة كاينا</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+            <div style="flex:1;min-width:200px;">
+              <span class="panel-label">رمز الغرفة</span>
+              <input type="text" id="join-room-code" class="input-field mono" placeholder="ABCD" maxlength="6">
+            </div>
+            <button id="btn-join-room" class="btn-primary" style="height:46px;padding:0 28px;">انضمام</button>
+          </div>
+          <div class="lan-strip">
+            <span>رابط الشبكة: <b id="lobby-lan-ip">جاري الكشف...</b></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 2. ROOM LOBBY -->
+    <main id="room-lobby-view" class="room-lobby" style="display:none;">
+      <div class="room-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:13px;color:var(--muted);">رمز الطابلة:</span>
+          <span id="lobby-room-code" class="code-pill">----</span>
+          <button id="btn-copy-link" class="pill">نسخ الرابط</button>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button id="btn-fill-bots" class="pill">تعمير بالبوتات</button>
+          <button id="btn-start-game" class="btn-primary">بدء اللعبة</button>
+        </div>
+      </div>
+      <div class="seats-grid" id="lobby-seats-container"></div>
+    </main>
+
+    <!-- 3. GAME SCREEN -->
+    <main id="game-view" class="game-screen" style="display:none;">
+      <!-- Score HUD -->
+      <div class="score-bar">
+        <div id="team0-score-tray" class="score-pod t-violet"></div>
+        <div class="info-center">
+          <span id="dfo3-badge-display" class="info-badge">الدفوع 1 — 4 عواد = 20</span>
+          <span id="deal-round-display" class="info-sub">التفريقة 1/3</span>
+        </div>
+        <div id="team1-score-tray" class="score-pod t-amber"></div>
+      </div>
+
+      <!-- Felt Arena -->
+      <div class="arena">
+        <div id="seat-north" class="seat-n"></div>
+        <div id="seat-west" class="seat-w"></div>
+
+        <div class="center-zone">
+          <div id="table-cards-grid" class="table-cards"></div>
+          <div class="deck-stack">
+            <div class="ronda-card card-back" style="width:48px;height:74px;">
+              <img src="images/cards/card_back.png" class="ronda-card-img" alt="Deck">
+            </div>
+            <span id="table-deck-count" class="deck-count">24</span>
+          </div>
+          <div id="announcement-banner" class="announce">
+            <div id="announcement-title" class="announce-title"></div>
+            <div id="announcement-subtitle" class="announce-sub"></div>
+          </div>
+          <div id="flying-cards-container"></div>
+        </div>
+
+        <div id="seat-east" class="seat-e"></div>
+        <div id="seat-south" class="seat-s">
+          <div class="player-tag-container"></div>
+          <div id="my-hand-container" class="my-hand"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- CHAT DRAWER -->
+    <div id="chat-drawer" class="chat-drawer">
+      <div class="chat-header">
+        <span>الدردشة</span>
+        <button onclick="document.getElementById('chat-drawer').classList.remove('open')" style="background:none;border:none;color:var(--white);cursor:pointer;font-size:16px;">x</button>
+      </div>
+      <div id="chat-messages-box" class="chat-messages"></div>
+      <div class="chat-quick-darija">
+        <button class="btn-darija-chip" data-text="روندا!">روندا!</button>
+        <button class="btn-darija-chip" data-text="خلاص!">خلاص!</button>
+        <button class="btn-darija-chip" data-text="القاعة بالشيخ!">القاعة بالشيخ!</button>
+        <button class="btn-darija-chip" data-text="باستا!">باستا!</button>
+      </div>
+      <div style="display:flex;padding:8px;gap:6px;">
+        <input type="text" id="chat-input-field" class="input-field" placeholder="اكتب ميساج..." style="font-size:13px;padding:8px 12px;flex:1;">
+        <button id="btn-send-chat" class="btn-primary" style="padding:6px 14px;font-size:13px;">صيفط</button>
+      </div>
+    </div>
+
+    <!-- RULES MODAL -->
+    <div id="rules-modal" class="modal-bg">
+      <div class="modal-box">
+        <button class="modal-close" onclick="document.getElementById('rules-modal').classList.remove('open')">x</button>
+        <h2 id="rules-modal-title" style="color:var(--violet);margin-bottom:8px;">قواعد الروندا المغربية</h2>
+        <div class="rules-tabs">
+          <button class="rules-tab active" data-lang="ar">الدارجة</button>
+          <button class="rules-tab" data-lang="fr">Francais</button>
+          <button class="rules-tab" data-lang="en">English</button>
+        </div>
+        <div id="rules-content-body" class="rules-body"></div>
+      </div>
+    </div>
+
+    <!-- QUIT CONFIRMATION -->
+    <div id="quit-confirm-modal" class="modal-bg">
+      <div class="modal-box" style="max-width:380px;text-align:center;">
+        <h2 style="color:var(--red);margin-bottom:12px;">مغادرة الطابلة</h2>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:18px;">واش متأكد باغي تخرج وترجع للرئيسية؟</p>
+        <div style="display:flex;gap:8px;">
+          <button id="btn-cancel-quit" class="btn-secondary" style="flex:1;">إلغاء</button>
+          <button id="btn-confirm-quit" class="btn-primary" style="flex:1;background:var(--red);box-shadow:none;">نعم، خروج</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR MODAL -->
+    <div id="qr-modal" class="modal-bg">
+      <div class="modal-box" style="max-width:420px;">
+        <button class="modal-close" onclick="document.getElementById('qr-modal').classList.remove('open')">x</button>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <h2 style="color:var(--violet);">دخول صحابك من التيليفون</h2>
+          <p style="color:var(--muted);font-size:13px;text-align:center;">
+            صحابك لي معاك ف نفس الواي فاي يسكانياو هاد الكود بكاميرا التيليفون ويدخلو نيشان
+          </p>
+          <img id="lan-qr-image" class="qr-code-img" alt="QR Code">
+          <div id="lan-url-display" class="lan-ip-box">http://...</div>
+          <button class="pill" onclick="window.lanHelper && window.lanHelper.copyJoinUrl()" style="width:100%;justify-content:center;">نسخ الرابط</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HAND SUMMARY MODAL -->
+    <div id="hand-summary-modal" class="modal-bg">
+      <div class="modal-box" style="max-width:480px;">
+        <div id="hand-summary-content"></div>
+        <button id="btn-next-hand" class="btn-primary" style="width:100%;margin-top:10px;">التفريقة الموالية</button>
+      </div>
+    </div>
+
+    <!-- VICTORY MODAL -->
+    <div id="victory-modal" class="modal-bg">
+      <div class="modal-box" style="max-width:460px;">
+        <div id="victory-modal-content"></div>
+        <button id="btn-restart-match" class="btn-primary" style="width:100%;margin-top:12px;">ماتش جديد</button>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast-notification" class="toast"></div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/rulesModal.js"></script>
+  <script src="js/lanHelper.js"></script>
+  <script src="js/soloGame.js"></script>
+  <script src="js/rondaClient.js"></script>
+</body>
+</html>
