@@ -39,6 +39,7 @@ class SoloRondaGame {
 
   startSoloMatch() {
     this.active = true;
+    if (this.client) this.client.isSoloMode = true;
     this.scores = [0, 0];
     this.currentDfo3 = 1;
     this.handNumber = 0;
